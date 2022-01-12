@@ -13,21 +13,27 @@ namespace Serial_AutoTestTool
     {
         static bool _continue;
         static SerialPort _serialPort;
-        static string testFilePath = "mqtt_test_case";
+        static string testFilePath = "./mqtt_test_case";
         static string resp_msg;
         static string stars_text = "\r\n***********************************************************\r\n";
         static string intro_text = "This is automation testing tool for the secure MQTT project\r\n";
         static string author_version = "Author\t\t: Viet-Tu Dao\r\n" +
-                                       "SW version\t: v0.2\r\n" +
-                                       "Date Release\t: 24-11-2021\r\n";
+                                       "SW Version\t: v0.4\r\n" +
+                                       "Date Release\t: 30-11-2021\r\n";
         static string help_text = " - /start: Begin to execute the test case script\r\n" +
                                   " - /help: Display this help\r\n" + 
-                                  " - /quit: Exit the program\r\n";
+                                  " - /quit: Exit the program\r\n" +
+                                  " - /file: Path to the test case script file (Notice: The path MUST not include white-space)\r\n";
 
         static void Main(string[] args)
         {
-            //string name;
-            string message;
+            string console_inputs;
+            char[] separtors = new char[] { ' ', '\t' };
+
+            string[] console_input_cmd_args; // = cmd_args_str.Split(separtors, StringSplitOptions.RemoveEmptyEntries);
+            string console_input_cmd; // = cmd_args[0];
+            int console_input_argc; // = cmd_args.Length;
+
             text_init();
 
             StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
@@ -59,14 +65,26 @@ namespace Serial_AutoTestTool
 
             while (_continue)
             {
-                message = Console.ReadLine();
+                /* Processing console inputs */
+                console_inputs = Console.ReadLine();
+                if (String.IsNullOrEmpty(console_inputs) || console_inputs[0] != '/')
+                {
+                    _serialPort.WriteLine(
+                        String.Format("{0}", console_inputs));
+                    continue;
+                }
 
-                if (stringComparer.Equals("/quit", message))
+                console_input_cmd_args = console_inputs.Split(separtors, StringSplitOptions.RemoveEmptyEntries);
+                console_input_cmd = console_input_cmd_args[0]; // input command
+                console_input_argc = console_input_cmd_args.Length; // number of input arguments
+
+                if (stringComparer.Equals("/quit", console_input_cmd))
                 {
                     goto Quit;
                 }
-                else if (stringComparer.Equals("/start", message)) 
+                else if (stringComparer.Equals("/start", console_input_cmd)) 
                 {
+                    /* Processing the script */
                     if (File.Exists(testFilePath) == false)
                     {
                         Console.WriteLine($"Can't find the path: {testFilePath}");
@@ -82,22 +100,27 @@ namespace Serial_AutoTestTool
                         //while (fs.Read(b, 0, b.Length) > 0)
 
                         //string line;
-                        char[] separtors = new char[] { ' ' };
+
 
                         //while ((line = file.ReadLine()) != null) // Read line by line of the test file
+
+                        Console.WriteLine($"Executing the test script file: '{testFilePath}'");
+
                         foreach (string line in lines)
                         {
                             //Console.WriteLine(temp.GetString(b));
                             //string inputString = temp.GetString(b);
                             if (String.IsNullOrEmpty(line)) continue;
-                            if (line[0] == '/' && line.Length < 50)  // my command line
+                            
+                            if (is_my_command(line))
                             {
-                                string cmd_args_str = line.Substring(1, line.Length - 1); // command & arguments string
-                                string[] cmd_args = cmd_args_str.Split(separtors, StringSplitOptions.RemoveEmptyEntries);
+                                //string cmd_args_str = line.Substring(1, line.Length - 1); // command & arguments string
+                                string[] cmd_args = line.Split(separtors, StringSplitOptions.RemoveEmptyEntries);
                                 string cmd = cmd_args[0];
                                 int argc = cmd_args.Length;
+
                                 //Console.WriteLine(line);
-                                if (stringComparer.Equals(cmd, "wait"))
+                                if (stringComparer.Equals(cmd, "/wait"))
                                 {
                                     
                                     if (argc != 2)
@@ -126,7 +149,7 @@ namespace Serial_AutoTestTool
                                     }
 
                                 }
-                                else if (stringComparer.Equals(cmd, "expected"))
+                                else if (stringComparer.Equals(cmd, "/expected"))
                                 {
                                     if (argc != 2)
                                     {
@@ -137,19 +160,18 @@ namespace Serial_AutoTestTool
                                     string _resp_msg = resp_msg.Substring(0, resp_msg.Length - 2);
                                     if (String.Equals(_resp_msg, cmd_args[1], StringComparison.OrdinalIgnoreCase))
                                     {
-                                        Console.WriteLine("<-------------Passed--------------->");
+                                        Console.WriteLine($"[-------------Passed---------------]");
                                     }
                                     else
                                     {
-
                                         //Console.WriteLine($"Expected {cmd_args[1]}");
-                                        Console.WriteLine("=====================================================> Failed!!!");
+                                        Console.WriteLine($"[===================Failed==============]");
                                     }
                                     
-                                }
-                                
+                                }                                
                             }
-                            else if (line[0] == '#')
+                            //else if (line[0] == '#')
+                            else if (line.TrimStart(' ')[0] == '#')
                             {
                                 continue; // skips the comment
                             } 
@@ -157,24 +179,36 @@ namespace Serial_AutoTestTool
                             {
                                 _serialPort.WriteLine(line);
                             }
+                            //_serialPort.WriteLine(line);
+                            Thread.Sleep(300); // wait 0.3 second
 
-                            
                         }
                         //file.Close();
                     }
                     
                 }
-                else if (stringComparer.Equals("/help", message))
+                else if (stringComparer.Equals("/help", console_input_cmd))
                 {
                     Console.WriteLine(help_text);
                 }
-                else
+                else if (stringComparer.Equals("/file", console_input_cmd))
                 {
-                    //_serialPort.WriteLine(
-                    //    String.Format("<{0}>: {1}", name, message));
-                    _serialPort.WriteLine(
-                        String.Format("{0}", message));
-                }
+                    if (console_input_argc != 2)
+                    {
+                        Console.WriteLine($"Default file path '{testFilePath}' will be used!");                        
+                    }
+                    else
+                    {
+                        testFilePath = console_input_cmd_args[1];
+                        Console.WriteLine($"Test case script file path '{testFilePath}' will be used!");
+                    }
+
+                    if (File.Exists(testFilePath) == false)
+                    {
+                        Console.WriteLine($"Can't find the path: '{testFilePath}'");
+                        goto Quit;
+                    }
+                }                
             }
             Quit:
                 _continue = false;
@@ -183,6 +217,18 @@ namespace Serial_AutoTestTool
                 Console.WriteLine("Press enter to exit");
                 Console.ReadKey();
                 return;
+        }
+        public static bool is_my_command(string in_str)
+        {
+            bool ret = false;
+            char[] delims = {' ', '\t'};
+
+            string[] args = in_str.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+            if (args[0][0] == '/' && (args.Length > 1 || args[0].Length < 32)) // comand length shouldbe shorter than 32 byte-size
+            {
+                return true;
+            }
+            return ret;
         }
 
         public static void text_init()

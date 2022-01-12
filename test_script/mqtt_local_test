@@ -1,0 +1,201 @@
+### MQTT local test ##
+reset
+/wait 5
+################### Test case: wifi get/set features ########################
+wifi set station.ssid <WiFi_SSID>
+wifi set station.passkey <Password>
+wifi set station.security WPA1/WPA2
+wifi connect
+/wait 5
+
+
+################### Test case: wifi save ########################
+# wifi save
+# /wait 1
+# reset
+# /wait 5
+
+# wifi get station.ssid
+# /expected  <SSID>
+
+# wifi get station.passkey
+# /expected  <Password>
+
+# wifi get station.security
+# /expected  WPA1/WPA2
+
+# wifi connect
+# /wait 5
+# /expected  connected
+
+################### Test case: MQTT get/set features ########################
+mqtt set broker.address 192.168.2.8
+mqtt get broker.address
+/wait 1
+/expected  192.168.2.8
+
+mqtt set broker.port 8883
+mqtt get broker.port
+/wait 1
+/expected 8883
+
+mqtt set broker.username mosquitto
+mqtt get broker.username
+/wait 1
+/expected  mosquitto
+
+mqtt set broker.password 1234567a@
+mqtt get broker.password
+/wait 1
+/expected  1234567a@
+
+mqtt set publish_topic.name test/pub
+mqtt get publish_topic.name
+/wait 1
+/expected  test/pub
+
+mqtt set subscribe_topic.name test/sub
+mqtt get subscribe_topic.name
+/wait 1
+/expected  test/sub
+
+mqtt set client_id wgm160p
+mqtt get client_id
+/wait 1
+/expected  wgm160p
+
+mqtt get mqtt
+/wait 1
+
+### Set CA ###
+mqtt set tls.certification_authority
+/wait 1
+-----BEGIN CERTIFICATE-----
+
+MIIDuzCCAqOgAwIBAgIUEhy9zW3xcEV8BH03mNnM1SmEDHowDQYJKoZIhvcNAQEL
+BQAwbTELMAkGA1UEBhMCRlIxETAPBgNVBAgMCEJyaXR0YW55MQ8wDQYDVQQHDAZS
+ZW5uZXMxFTATBgNVBAoMDFNpbGljb24gTGFiczEjMCEGA1UEAwwaTG9jYWwgUm9v
+dCBDQSBmb3IgZXhhbXBsZXMwHhcNMTkxMjE4MDgzODQ4WhcNMjkxMjE1MDgzODQ4
+WjBtMQswCQYDVQQGEwJGUjERMA8GA1UECAwIQnJpdHRhbnkxDzANBgNVBAcMBlJl
+bm5lczEVMBMGA1UECgwMU2lsaWNvbiBMYWJzMSMwIQYDVQQDDBpMb2NhbCBSb290
+IENBIGZvciBleGFtcGxlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
+AOklbFhZzKrx8M68XwvE++BAYXFwJZQ9p24VH8ypeCoaU2R7KZH0DDvx1YdqA67z
+hwYJ6pN6jqbflZI4opxGzNiq9Y82bzglibbY3qiL2p211K3KAadmPxdyCrrK70fE
+FKLS2iD/iZRRWQTQFGi7eunUBBDakhhZMlVOMEkhZcYdvBfm20+j9c5Iqwoj4rPn
+KlX8pe1OCa+kr84ES1FUmlVE/tgsvE61zbhd+c/Zh8R6kIFDhwDTGuDWLputi5X1
+sCCs5fRjuLwExkwQpjY7jZHrYI2vluRdqfHIyLM4ocY6dSCwWcA4GELUlB8kwcnB
+3372IoEnHLS3Al1UalJ4UFMCAwEAAaNTMFEwHQYDVR0OBBYEFDt6jfJvFtlSXplN
+INTexW65tmzqMB8GA1UdIwQYMBaAFDt6jfJvFtlSXplNINTexW65tmzqMA8GA1Ud
+EwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBABiw6Xj9bFzf45rPQGJlsrqE
+6HMxxdmD/5gUufIO7vIsqazyNOBTqgU4cu4kztrGkbR+V9QUyNYSdg78g2+4IFcu
+yWLxTPdn/lruEhJjCBekaTlu4G6gnbOsa7EQVwAhuiuQCuJmzhcZJUJvrTObTAyT
+M8TOOJHhJ6XhX4+v9cRCfy5byBRd13qRlXe1tGWORWW3vOx7TtGCTD568ssdRSma
+owXoX39rHGkUQ2zVH7yrfQRMPS5GApEivxWPeX61j1OZUz+QJbTH6Rq8zIHqeaau
+uQzxz0WzwQJeDJ06lyHeLr/SqjWv7oH4d1YrZIg6/LdopnYhdeVrz1lpkc0I4y8=
+-----END CERTIFICATE-----
+.
+/wait 1
+mqtt get tls.certification_authority
+/wait 1
+
+### Set device_certificate ###
+mqtt set tls.device_certificate
+/wait 1
+-----BEGIN CERTIFICATE-----
+MIIDTjCCAjYCFCe6/0raIKCovinNowT7SUxvLtGSMA0GCSqGSIb3DQEBCwUAMG0x
+CzAJBgNVBAYTAkZSMREwDwYDVQQIDAhCcml0dGFueTEPMA0GA1UEBwwGUmVubmVz
+MRUwEwYDVQQKDAxTaWxpY29uIExhYnMxIzAhBgNVBAMMGkxvY2FsIFJvb3QgQ0Eg
+Zm9yIGV4YW1wbGVzMB4XDTE5MTIxODE2NDA0MVoXDTI5MTIxNTE2NDA0MVowWjEL
+MAkGA1UEBhMCRlIxETAPBgNVBAgMCEJyaXR0YW55MQ8wDQYDVQQHDAZSZW5uZXMx
+FTATBgNVBAoMDFNpbGljb24gTGFiczEQMA4GA1UEAwwHd2dtMTYwcDCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMcYPhbXqFwBw6HuNSWWXA4Hjw5tDjNq
+GbXjw2UjEivBrEQFo4A4zPUgwULrDdXhwa/YDtZ4WWU2nImhbpxj1Np/myCG703i
+SGGQehNS3vuocktuS5Pm4/snCdyr69t4xHVzIkKe5Cncwo2nJOqzwe+oa3r/HnOc
+dmLbgXvsW1wmBJ1p5v6uSCZZDTRTa+RN0quG/QVRTklggKXvhpT+qdRf608oM531
+3gFftpcVLK5kFkSGVdOffw+rNrTyXp1T6B3vAtMptbrK96ZwPreQ0tmM6qtxRmqn
+Vp2uvCpa1KLoz0uUcYKb+stoSqTn3CeEHAFmMzm1PpIdSwCOh/uU8osCAwEAATAN
+BgkqhkiG9w0BAQsFAAOCAQEADQUuAJPLcqs5JWrlXpjqek5+DzcoKVeTt4u+FygC
+sH0ngB8l6LwKMWdKT2zqGF4Slm06yCmjddj89SWoPiBOyb3WmlKHhR78AD83qE4w
+1MPdXhtWv7uf2TEGhx7Q2r/ZfPR+gjjQQEjhuuzUvELnlJJqPcZp23/azY5E/TCS
+00i56VJGld883GQUDs5zbPIhGSehUmFzIqumdpUxrYiA9Qp9rRNMqUZlU5NF2xR4
+fFj1vOZ1q2TvGW2CBA7nwx6rpzSvHiR/J+mwKk7wvxkZ52cI3ydGiTWr/QcLpU2O
+SqQU9wf0PjyMMSBUaiSoBDetSJDWQcOCatkJINf5GtZ7lg==
+-----END CERTIFICATE-----
+.
+mqtt get tls.device_certificate
+
+
+### Set tls.device_private_key ###
+mqtt set tls.device_private_key
+/wait 1
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAxxg+FteoXAHDoe41JZZcDgePDm0OM2oZtePDZSMSK8GsRAWj
+gDjM9SDBQusN1eHBr9gO1nhZZTaciaFunGPU2n+bIIbvTeJIYZB6E1Le+6hyS25L
+k+bj+ycJ3Kvr23jEdXMiQp7kKdzCjack6rPB76hrev8ec5x2YtuBe+xbXCYEnWnm
+/q5IJlkNNFNr5E3Sq4b9BVFOSWCApe+GlP6p1F/rTygznfXeAV+2lxUsrmQWRIZV
+059/D6s2tPJenVPoHe8C0ym1usr3pnA+t5DS2Yzqq3FGaqdWna68KlrUoujPS5Rx
+gpv6y2hKpOfcJ4QcAWYzObU+kh1LAI6H+5TyiwIDAQABAoIBAQCMT7Z6TLQ3W3rv
+JTzJZ6UqsgMM7KikbXL/MCxlm4jT06M/MSYgWGeBnfr12Ugf4wGolsEmPxzpasp5
+aI7WorjA4EuIafA+2GmgcLzH35CMlRMvu+SBsKgdOU8G+Ra4zuzNxT1w7B/qrM1k
+HVa0HclgyDYvMZrZaXw5gW9I0bM1RctZLr1WhXBziewYDzSvYJn3oBQPArzh37Ii
+vzXPW7T6DMrdDvXRyDGZxZO4gzxiYEofmhvgBoDhD3+y41OKrjl3LRoQxoCGHRFA
+oqJdM+RAHxuykvR9/E32cnPCD0OhIKUgCTzyfaa35VlHxw9Qq02cSZqElSFAg98l
+Eztw7z8RAoGBAOvHS2cK3l+DLnszmW7z5L+r5tq8nkxZTb/47L5LF5wqflI8YDX7
+RzOuVWFb9UPldTKo81tO2MD2sQiEd0LTDAjXcYv+hWEBfZdqqrvCMTa/vInpiBcx
+OR5kIZHxu4ZLD3V6C2BBmCFdlpZtifHNboi0QQHsjOQhr36qcBWYPquZAoGBANgr
+hqCaV+YPZW+IcWtJAjjkgq0iH4/IZT/6TqcyGXITg9gKAhQq/OjHkDEMPUOSGHvy
+8p7aXUhNIcBA7QfQdOOYr1pA05HRQ/qh1c0v4XHVDhMYWdmq849vTsDOvBXbAQpm
+LVjd8Rd7WqEmE8xSuFzNabTwa1wWWqIq/qgbWEXDAoGAYFzem2mcwwqZV68aGXfC
+2PeH7YRDak7hcQFquMd2CdRwNmoIpGdjjWLF8Hml/y7rvF3CwGG0QwFQD3wcRgp9
+k6uB88Z9es0iKF1nFD/k30xz4SW6AkiS4LHp6n0SuGs7ETdlKN0GMTTP1AFG7LWa
+ZHLPUtr8Jk0CLdG454qGqpkCgYBfzMpZGo2h02jsyNca6LwnYn3XJKxAGFtmwxNg
+XX+RYrynXagWMAbtUqPAWOA9td1L8Rs88yEsDaLLhPqG4ActZlkv8lLQ6KDrzhTm
+XjXXMMiQBdar9GsEQhvwrq4EMY6AgU/PdmyGL5C2oh1cC7zQw+f43CN4KB/6hntd
+HOE96QKBgQCaZ/1LH1gijmxb+xIYN7crBd7nhXYVyc4ueNpVNNl8ffz+S/L8Bb+H
+dDP1DKsiH5Xldelbmt5PLd1yegC2dn2txdTo//b6lr8XahYEicSxgxiVypwL4EWp
+h8U2kC2Vk5Zcpb9lwmJS6FfXH6QoE3Jk1G0KTg0lz4n1M5Q3hIQyIQ==
+-----END RSA PRIVATE KEY-----
+.
+
+mqtt get tls.device_private_key
+/wait 1
+
+################### Test case: mqtt save ########################
+# mqtt save
+# /wait 1
+# reset
+# /wait 5
+
+# mqtt get broker.address
+# /expected  192.168.2.8
+
+# mqtt get broker.port
+# /expected 8883
+
+# mqtt get broker.username
+# /expected  mosquitto
+
+# mqtt get broker.password
+# /expected  1234567a@
+
+# mqtt get publish_topic.name
+# /expected  test/pub
+
+# mqtt get subscribe_topic.name
+# /expected  test/sub
+
+# mqtt get client_id
+# /expected  wgm160p
+
+# mqtt get mqtt
+# mqtt get tls.certification_authority
+# mqtt get tls.device_certificate
+# mqtt get tls.device_private_key
+################### Test case: mqtt connect ########################
+
+mqtt connect
+/wait 5
+
+################### Test case: mqtt publish ########################
+mqtt publish {"message": "Hello from device"}
+/wait 1

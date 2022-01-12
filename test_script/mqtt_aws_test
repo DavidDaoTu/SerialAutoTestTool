@@ -1,0 +1,107 @@
+reset
+/wait 3
+
+################### Test case: wifi get/set features ########################
+wifi set station.ssid <WiFi_SSID>
+wifi set station.passkey <Password>
+wifi set station.security WPA1/WPA2
+wifi connect
+/wait 3
+
+################### Test case: MQTT get/set features ########################
+mqtt set broker.address xxxxx-ats.iot.us-west-2.amazonaws.com
+mqtt get broker.address
+/expected xxxxx-ats.iot.us-west-2.amazonaws.com
+
+mqtt set broker.port 8883
+mqtt get broker.port
+/expected 8883
+
+mqtt set client_id efm32gg11
+mqtt get client_id
+/expected  efm32gg11
+
+mqtt set publish_topic.name efm32gg11/data
+mqtt get publish_topic.name
+/expected efm32gg11/data
+
+mqtt set subscribe_topic.name efm32gg11/rx
+mqtt get subscribe_topic.name
+/expected efm32gg11/rx
+
+mqtt get mqtt
+/wait 1
+
+### Set CA of AWS ###
+mqtt set tls.certification_authority
+/wait 1
+-----BEGIN CERTIFICATE-----
+MIIDQTCCAimgAwIBAgITBmyfz5m/jAo54vB4ikPmljZbyjANBgkqhkiG9w0BAQsF
+ADA5MQswCQYDVQQGEwJVUzEPMA0GA1UEChMGQW1hem9uMRkwFwYDVQQDExBBbWF6
+b24gUm9vdCBDQSAxMB4XDTE1MDUyNjAwMDAwMFoXDTM4MDExNzAwMDAwMFowOTEL
+MAkGA1UEBhMCVVMxDzANBgNVBAoTBkFtYXpvbjEZMBcGA1UEAxMQQW1hem9uIFJv
+b3QgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALJ4gHHKeNXj
+ca9HgFB0fW7Y14h29Jlo91ghYPl0hAEvrAIthtOgQ3pOsqTQNroBvo3bSMgHFzZM
+9O6II8c+6zf1tRn4SWiw3te5djgdYZ6k/oI2peVKVuRF4fn9tBb6dNqcmzU5L/qw
+IFAGbHrQgLKm+a/sRxmPUDgH3KKHOVj4utWp+UhnMJbulHheb4mjUcAwhmahRWa6
+VOujw5H5SNz/0egwLX0tdHA114gk957EWW67c4cX8jJGKLhD+rcdqsq08p8kDi1L
+93FcXmn/6pUCyziKrlA4b9v7LWIbxcceVOF34GfID5yHI9Y/QCB/IIDEgEw+OyQm
+jgSubJrIqg0CAwEAAaNCMEAwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMC
+AYYwHQYDVR0OBBYEFIQYzIU07LwMlJQuCFmcx7IQTgoIMA0GCSqGSIb3DQEBCwUA
+A4IBAQCY8jdaQZChGsV2USggNiMOruYou6r4lK5IpDB/G/wkjUu0yKGX9rbxenDI
+U5PMCCjjmCXPI6T53iHTfIUJrU6adTrCC2qJeHZERxhlbI1Bjjt/msv0tadQ1wUs
+N+gDS63pYaACbvXy8MWy7Vu33PqUXHeeE6V/Uq2V8viTO96LXFvKWlJbYK8U90vv
+o/ufQJVtMVT8QtPHRh8jrdkPSHCa2XV4cdFyQzR1bldZwgJcJmApzyMZFo6IQ6XU
+5MsI+yMRQ+hDKXJioaldXgjUkK642M4UwtBV8ob2xJNDd2ZhwLnoQdeXeGADbkpy
+rqXRfboQnoZsG4q5WTP468SQvvG5
+-----END CERTIFICATE-----
+.
+/wait 1
+
+mqtt get tls.certification_authority
+/wait 1
+
+### Set device_certificate ###
+mqtt set tls.device_certificate
+/wait 1
+-----BEGIN CERTIFICATE-----
+MIIDWTCCAkGgAwIBAgIUFYbcRHxcrBOEhmT/27Sv45vhbZ0wDQYJKoZIhvcNAQEL
+BQAwTTFLMEkGA1UECwxCQW1hem9uIFdlYiBTZXJ2aWNlcyBPPUFtYXpvbi5jb20g
+...............................................................
+...............................................................
+...............................................................
+...............................................................
+eAE2LziBqyRZ7FTze8nEMbxNbeV0aDw96+aCR7pQln+2mPbd8PTUx+alDfva
+-----END CERTIFICATE-----
+.
+/wait 1
+
+mqtt get tls.device_certificate
+/wait 1
+
+### Set tls.device_private_key ###
+mqtt set tls.device_private_key
+/wait 1
+-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAwEp/N3ng0WMjp5qmgemCTlWAjP+VdcgFA+1IIcDoFP09H46l
+...............................................................
+...............................................................
+...............................................................
+...............................................................
+fijedWlbPoRnS+4KhmMINuKj8p5UZHD13FjS8aIqvb3wCCKSnyJaXG4OnxxZpEf7
+JYLYvMeNrG1gH4rMFq/XiC1C79zLK46grZly8nCCAonRnpKybyjP
+-----END RSA PRIVATE KEY-----
+
+
+.
+/wait 1
+mqtt get tls.device_private_key
+/wait 1
+
+################### Test case: mqtt connect ########################
+mqtt connect
+/wait 5
+
+################### Test case: mqtt publish ########################
+mqtt publish {"message": "Hello from device"}
+/wait 1

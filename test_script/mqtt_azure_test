@@ -1,0 +1,114 @@
+reset
+/wait 5
+
+################### Test case: wifi get/set features ########################
+wifi set station.ssid <WiFi_SSID>
+wifi set station.passkey <Password>
+wifi set station.security WPA1/WPA2
+
+wifi connect
+/wait 5
+
+################### Test case: MQTT get/set features ########################
+mqtt set broker.address xxxxx.azure-devices.net
+mqtt get broker.address
+/expected xxxxx.azure-devices.net
+
+mqtt set broker.port 8883
+mqtt get broker.port
+/expected 8883
+
+mqtt set broker.username xxxxx.azure-devices.net/wgm160p
+mqtt get broker.username
+/expected xxxxx.azure-devices.net/wgm160p
+
+mqtt set publish_topic.name devices/wgm160p/messages/events/
+mqtt get publish_topic.name
+/expected devices/wgm160p/messages/events/
+
+mqtt set subscribe_topic.name devices/wgm160p/messages/devicebound/#
+mqtt get subscribe_topic.name
+/expected devices/wgm160p/messages/devicebound/#
+
+mqtt set client_id wgm160p
+mqtt get client_id
+/expected  wgm160p
+
+mqtt get mqtt
+/wait 1
+
+### Set CA of Azure (baltimor cyber trust) or (digicert global g2) ###
+mqtt set tls.certification_authority
+/wait 1
+-----BEGIN CERTIFICATE-----
+MIIDdzCCAl+gAwIBAgIEAgAAuTANBgkqhkiG9w0BAQUFADBaMQswCQYDVQQGEwJJ
+RTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYD
+VQQDExlCYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTAwMDUxMjE4NDYwMFoX
+DTI1MDUxMjIzNTkwMFowWjELMAkGA1UEBhMCSUUxEjAQBgNVBAoTCUJhbHRpbW9y
+ZTETMBEGA1UECxMKQ3liZXJUcnVzdDEiMCAGA1UEAxMZQmFsdGltb3JlIEN5YmVy
+VHJ1c3QgUm9vdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKMEuyKr
+mD1X6CZymrV51Cni4eiVgLGw41uOKymaZN+hXe2wCQVt2yguzmKiYv60iNoS6zjr
+IZ3AQSsBUnuId9Mcj8e6uYi1agnnc+gRQKfRzMpijS3ljwumUNKoUMMo6vWrJYeK
+mpYcqWe4PwzV9/lSEy/CG9VwcPCPwBLKBsua4dnKM3p31vjsufFoREJIE9LAwqSu
+XmD+tqYF/LTdB1kC1FkYmGP1pWPgkAx9XbIGevOF6uvUA65ehD5f/xXtabz5OTZy
+dc93Uk3zyZAsuT3lySNTPx8kmCFcB5kpvcY67Oduhjprl3RjM71oGDHweI12v/ye
+jl0qhqdNkNwnGjkCAwEAAaNFMEMwHQYDVR0OBBYEFOWdWTCCR1jMrPoIVDaGezq1
+BE3wMBIGA1UdEwEB/wQIMAYBAf8CAQMwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3
+DQEBBQUAA4IBAQCFDF2O5G9RaEIFoN27TyclhAO992T9Ldcw46QQF+vaKSm2eT92
+9hkTI7gQCvlYpNRhcL0EYWoSihfVCr3FvDB81ukMJY2GQE/szKN+OMY3EU/t3Wgx
+jkzSswF07r51XgdIGn9w/xZchMB5hbgF/X++ZRGjD8ACtPhSNzkE1akxehi/oCr0
+Epn3o0WC4zxe9Z2etciefC7IpJ5OCBRLbf1wbWsaY71k5h+3zvDyny67G7fyUIhz
+ksLi4xaNmjICq44Y3ekQEe5+NauQrz4wlHrQMz2nZQ/1/I6eYs9HRCwBXbsdtTLS
+R9I4LtD+gdwyah617jzV/OeBHRnDJELqYzmp
+-----END CERTIFICATE-----
+.
+/wait 1
+
+mqtt get tls.certification_authority
+/wait 1
+
+### Set device_certificate ###
+mqtt set tls.device_certificate
+/wait 1
+-----BEGIN CERTIFICATE-----
+MIIDNjCCAh4CFDtS1CpYpy8GX47K95/oImNgFmRgMA0GCSqGSIb3DQEBCwUAMFgx
+...............................................................
+..........................Looks like this (PEM)...............
+...............................................................
+...............................................................
+4lIJ2mv2x1jIYTRZgDFtwgcQwEWtL4Mkb/RZ6zm5hhBzrXWtyfsxow==
+dqGoNRMWZvmSM64R2nAHJBzpPiuWaMFAA7HT7RTwjzq41Vd/XG9nx8k4vd5zPPX4
+TgtZ3YxX03g/uA==
+-----END CERTIFICATE-----
+.
+/wait 1
+
+mqtt get tls.device_certificate
+/wait 1
+
+### Set tls.device_private_key ###
+mqtt set tls.device_private_key
+/wait 1
+-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEAxG7gKHbK6oZ9Hf/RK8/GZTN+vCPGzn7chka88MmrkZ5UbCJH
+...............................................................
+..........................Looks like this (PEM)...............
+...............................................................
+...............................................................
+4lIJ2mv2x1jIYTRZgDFtwgcQwEWtL4Mkb/RZ6zm5hhBzrXWtyfsxow==
+-----END RSA PRIVATE KEY-----
+.
+/wait 1
+mqtt get tls.device_private_key
+/wait 1
+
+mqtt get mqtt
+/wait 1
+
+################### Test case: mqtt connect ########################
+mqtt connect
+/wait 5
+
+################### Test case: mqtt publish ########################
+mqtt publish
+/wait 1
